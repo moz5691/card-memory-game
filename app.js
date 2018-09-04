@@ -3,12 +3,16 @@ const cardBox = document.querySelector('.card-box');
 const cardImg = document.querySelectorAll('.card-img');
 const gameStatus = document.getElementById('game-status');
 const reloadBtn = document.getElementById('reload-btn');
+const timer = document.getElementById('timer');
 
 let isFirstCard = true;
 let firstCard, secondCard;
 let thatCard;
 let score = 0;
 let lockCards = false; // lockCards.. won't fire gameMain function.
+let totalSeconds = 0;
+let timerInterval = null;
+
 // toggle test code
 const toggle = function() {
   this.classList.toggle('flip');
@@ -26,6 +30,20 @@ const shuffle = function() {
   });
 };
 
+const timerShow = function() {
+  ++totalSeconds;
+  timer.innerHTML = totalSeconds + ' sec';
+};
+
+const startTimer = function() {
+  stopTimer();
+  timerInterval = setInterval(timerShow, 1000);
+};
+
+const stopTimer = function() {
+  clearInterval(timerInterval);
+};
+//
 // future use.  no need for now.
 const resetCards = function() {
   [firstCard, secondCard] = [null, null];
@@ -65,11 +83,13 @@ const gameMain = function() {
       score++;
       if (score === 8) {
         gameStatus.textContent = 'You won!';
+        stopTimer();
       }
     }
   }
 };
 
 shuffle();
+startTimer();
 cards.forEach(element => element.addEventListener('click', gameMain));
 reloadBtn.addEventListener('click', reload);

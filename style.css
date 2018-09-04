@@ -63,6 +63,12 @@ h2 {
   left: 200px;
   top: 3px;
 }
+#timer {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  position: absolute;
+  left: 380px;
+  top: 3px;
+}
 #reload-btn {
   display: inline-block;
   background-color: grey;
