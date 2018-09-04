@@ -8,7 +8,7 @@ let isFirstCard = true;
 let firstCard, secondCard;
 let thatCard;
 let score = 0;
-
+let lockCards = false; // lockCards.. won't fire gameMain function.
 // toggle test code
 const toggle = function() {
   this.classList.toggle('flip');
@@ -26,32 +26,42 @@ const shuffle = function() {
   });
 };
 
+// future use.  no need for now.
+const resetCards = function() {
+  [firstCard, secondCard] = [null, null];
+  [isFirstCard, lockCards] = [false, false];
+};
+
 // if first card, flip the card, wait for the 2nd card.
 // if second card, flip the 2nd card and match with 1st card.
 // if no match btw 1st and 2nd card,
 const gameMain = function() {
+  if (lockCards) return;
+  if (firstCard === this) return; // Youtube freeCodeCamp.org.. First card is already there.. escape.
+  // case for the first card is clicked.
   if (isFirstCard) {
     isFirstCard = false;
+    lockCards = false;
     firstCard = this.dataset.name;
-    console.log(this);
-    console.log(firstCard);
     this.classList.toggle('flip');
-    thatCard = this;
+    firstCard = this;
   } else {
     isFirstCard = true;
-    secondCard = this.dataset.name;
-    console.log(secondCard);
+    secondCard = this;
     // match betweeen first and second card.
     this.classList.toggle('flip');
-    that = this;
-    if (firstCard !== secondCard) {
+    secondCard = this;
+    if (firstCard.dataset.name !== secondCard.dataset.name) {
+      // case for 2nd card is clicked and no match.
+      lockCards = true;
       setTimeout(function() {
-        thatCard.classList.toggle('flip');
-      }, 1000);
-      setTimeout(function() {
-        that.classList.toggle('flip');
+        firstCard.classList.toggle('flip');
+        secondCard.classList.toggle('flip');
+        lockCards = false;
       }, 1000);
     } else {
+      firstCard.removeEventListener('click', gameMain);
+      secondCard.removeEventListener('click', gameMain);
       score++;
       if (score === 8) {
         gameStatus.textContent = 'You won!';
@@ -59,6 +69,7 @@ const gameMain = function() {
     }
   }
 };
+
 shuffle();
 cards.forEach(element => element.addEventListener('click', gameMain));
 reloadBtn.addEventListener('click', reload);
